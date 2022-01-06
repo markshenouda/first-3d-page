@@ -51,12 +51,6 @@ const sizes = {
   height: window.innerHeight,
 };
 
-// ScrollY
-let scrollY = 0;
-window.addEventListener("scroll", () => {
-  scrollY = window.scrollY;
-});
-
 // Cursor
 const cursor = {
   x: 0,
@@ -167,6 +161,36 @@ gltfLoader.load("./models/Fox/gLTF/Fox.gltf", (gltf) => {
   scene.add(fox);
 });
 
+// ScrollY
+let scrollY = 0;
+let currentSection = 0;
+window.addEventListener("scroll", () => {
+  scrollY = window.scrollY;
+
+  const newSection = Math.floor(scrollY / sizes.height);
+  if (newSection !== currentSection) {
+    currentSection = newSection;
+    switch (currentSection) {
+      case 0:
+        gsap.to(duck.rotation, {
+          duration: 1.5,
+          ease: "power2.inOut",
+          x: "+=6",
+          y: "+=3",
+        });
+      case 1:
+        gsap.to(avocado.rotation, {
+          duration: 1.5,
+          ease: "power2.inOut",
+          x: "+=6",
+          y: "+=3",
+        });
+      default:
+        return;
+    }
+  }
+});
+
 const renderer = new THREE.WebGLRenderer({
   alpha: true,
 });
@@ -205,7 +229,6 @@ const tick = () => {
   }
   if (avocado) {
     avocado.rotation.y += 0.01;
-    // avocado.rotation.x += 0.012;
   }
   camera.position.y = -scrollY * 0.007;
   if (mixer) {
